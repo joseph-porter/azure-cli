@@ -53,11 +53,15 @@ class AzCliLogging(CLILogging):
 
     def configure(self, args):
         azure_logger = logging.getLogger('azure')
-        print(len(azure_logger.manager.loggerDict.keys()), file=sys.stdout)
+        testsdk_logger = logging.getLogger('azure.cli.testsdk')
+
+        testsdk_logger.info(len(azure_logger.manager.loggerDict.keys()))
         start = timeit.default_timer()
-        print("============================", file=sys.stdout)
+        testsdk_logger.info("============================")
+
         super(AzCliLogging, self).configure(args)
-        print("configure", timeit.default_timer() - start, "******", len(cli_logger_names), file=sys.stdout)
+
+        testsdk_logger.info("@@@@@@@@@@@@@@@" + str(timeit.default_timer() - start) + "******" + str(len(cli_logger_names)))
 
         from knack.log import CliLogLevel
         if self.log_level == CliLogLevel.DEBUG:
