@@ -874,3 +874,4 @@ def _configure_knack():
     # Allow logs from 'azure' logger to be displayed.
     from knack.log import cli_logger_names
     cli_logger_names.append("azure")
+    print("**************", len(cli_logger_names), file=sys.stderr)
