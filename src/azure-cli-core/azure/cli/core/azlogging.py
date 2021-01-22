@@ -24,13 +24,15 @@ omitted     Warning     Debug       Critical    Debug
 """
 
 import os
+import sys
 import logging
 import datetime
+import timeit
 
 from azure.cli.core.commands.events import EVENT_INVOKER_PRE_CMD_TBL_TRUNCATE
 
 from knack.events import EVENT_CLI_POST_EXECUTE
-from knack.log import CLILogging, get_logger
+from knack.log import CLILogging, get_logger, cli_logger_names
 from knack.util import ensure_dir
 
 
@@ -50,7 +52,13 @@ class AzCliLogging(CLILogging):
         self.cli_ctx.register_event(EVENT_CLI_POST_EXECUTE, AzCliLogging.deinit_cmd_metadata_logging)
 
     def configure(self, args):
+        azure_logger = logging.getLogger('azure')
+        print(len(azure_logger.manager.loggerDict.keys()), file=sys.stdout)
+        start = timeit.default_timer()
+        print("============================", file=sys.stdout)
         super(AzCliLogging, self).configure(args)
+        print("configure", timeit.default_timer() - start, "******", len(cli_logger_names), file=sys.stdout)
+
         from knack.log import CliLogLevel
         if self.log_level == CliLogLevel.DEBUG:
             # As azure.core.pipeline.policies.http_logging_policy is a redacted version of
